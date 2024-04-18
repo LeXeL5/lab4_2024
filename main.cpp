@@ -8,8 +8,8 @@ void menu() {
 	cout << "(3) removeAt" << endl;
 	cout << "(4) elementAt" << endl;
 	cout << "(5) count" << endl;
-	cout << "(6) " << endl;
-	cout << "(7) " << endl;
+	cout << "(6) regionOutputByPopulation" << endl;
+	cout << "(7) removeCitiesByRegion" << endl;
 	cout << "(8) clear" << endl;
 }
 struct city {
@@ -94,6 +94,10 @@ struct List {
 		current->prev = newNode;
 		if (current == head) { head = newNode; }
 	}
+	Node<T>* getCurrent(int index) {
+		currentTo(index);
+		return current;
+	}
 
 	void add(T data) {
 		Node<T>* newNode = new Node<T>;
@@ -137,6 +141,52 @@ struct List {
 		}
 	}
 };
+void regionOutputByPopulation(List<city>& list) {
+	struct region {
+		string name = "";
+		int population = 0;
+	};
+	List<region> regionList;
+	for (int i = 0; i < list.count(); i++) {
+		bool isInRegionList = false;
+		for (int t = 0; t < regionList.count(); t++) {
+			if (list.elementAt(i).region == regionList.elementAt(t).name){
+				regionList.getCurrent(t)->data.population += list.elementAt(i).population;
+				isInRegionList = true;
+				break;
+			}
+		}
+		if (!isInRegionList) {
+			region newRegion;
+			newRegion.name = list.elementAt(i).region;
+			newRegion.population = list.elementAt(i).population;
+			regionList.add(newRegion);
+		}
+	}
+	for (int i = 0; i < regionList.count() - 1; i++) {
+		for (int t = 0; t < regionList.count() - i - 1; t++) {
+			if (regionList.elementAt(t).population < regionList.elementAt(t + 1).population) {
+				region tempRegion = regionList.elementAt(t);
+				regionList.getCurrent(t)->data = regionList.elementAt(t + 1);
+				regionList.getCurrent(t + 1)->data = tempRegion;
+			}
+		}
+	}
+	cout << "Region:\t\tPopulation:" << endl;
+	for (int i = 0; i < regionList.count(); i++) {
+		cout << regionList.elementAt(i).name << "\t\t" << regionList.elementAt(i).population << endl;
+	}
+}
+void removeCitiesByRegion(string region, List<city> &list){
+	if (!list.count()) return;
+	list.toFirst();
+	for (int i = 0; i < list.count(); i++) {
+		if (list.elementAt(i).region == region) {
+			list.removeCurrent();
+			i--;
+		}
+	}
+}
 void cityCout(city data) {
 	cout << "      Name: " << data.name << endl;
 	cout << "    Region: " << data.region << endl;
@@ -166,6 +216,7 @@ void main() {
 	List<city> list;
 	int choice = 0;
 	int index = 0;
+	string region;
 	while (true) {
 		system("cls");
 		menu();
@@ -205,11 +256,13 @@ void main() {
 			break;
 		}
 		case (6): {
-
+			regionOutputByPopulation(list);
 			break;
 		}
 		case (7): {
-
+			cout << "Region: ";
+			cin >> region;
+			removeCitiesByRegion(region, list);
 			break;
 		}
 		case (8): {
