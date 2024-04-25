@@ -150,8 +150,12 @@ void regionOutputByPopulation(List<city>& list) {
 	for (int i = 0; i < list.count(); i++) {
 		bool isInRegionList = false;
 		for (int t = 0; t < regionList.count(); t++) {
-			if (list.elementAt(i).region == regionList.elementAt(t).name){
-				regionList.getCurrent(t)->data.population += list.elementAt(i).population;
+			if (list.elementAt(i).region == regionList.elementAt(t).name) {
+				region  temp;
+				temp.population = regionList.elementAt(t).population + list.elementAt(i).population;
+				temp.name = regionList.elementAt(t).name;
+				regionList.add(temp);
+				regionList.removeAt(t);
 				isInRegionList = true;
 				break;
 			}
@@ -166,9 +170,8 @@ void regionOutputByPopulation(List<city>& list) {
 	for (int i = 0; i < regionList.count() - 1; i++) {
 		for (int t = 0; t < regionList.count() - i - 1; t++) {
 			if (regionList.elementAt(t).population < regionList.elementAt(t + 1).population) {
-				region tempRegion = regionList.elementAt(t);
-				regionList.getCurrent(t)->data = regionList.elementAt(t + 1);
-				regionList.getCurrent(t + 1)->data = tempRegion;
+				regionList.insert(t, regionList.elementAt(t + 1));
+				regionList.removeAt(t + 2);
 			}
 		}
 	}
@@ -177,7 +180,7 @@ void regionOutputByPopulation(List<city>& list) {
 		cout << regionList.elementAt(i).name << "\t\t" << regionList.elementAt(i).population << endl;
 	}
 }
-void removeCitiesByRegion(string region, List<city> &list){
+void removeCitiesByRegion(string region, List<city>& list) {
 	if (!list.count()) return;
 	list.toFirst();
 	for (int i = 0; i < list.count(); i++) {
