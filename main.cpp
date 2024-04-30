@@ -37,6 +37,11 @@ struct List {
 		current = head;
 		currentIndex = 0;
 	}
+	void toLast() {
+		if (!size) return;
+		current = tail;
+		currentIndex = count() - 1;
+	}
 	void toNext() {
 		if (!size) return;
 		current = current->next;
@@ -49,6 +54,12 @@ struct List {
 	}
 	void currentTo(int index) {
 		if (!size) return;
+		if ((currentIndex - index) > index) {
+			toFirst();
+		}
+		if ((count() - 1 - index) < (index - currentIndex)) {
+			toLast();
+		}
 		while (index > currentIndex) {
 			toNext();
 		}
@@ -206,7 +217,6 @@ city cityCin() {
 	return city;
 }
 int indexCin(int size) {
-	//if (!size) return 0;
 	int index;
 	do {
 		cout << "Index: ";
